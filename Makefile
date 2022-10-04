@@ -22,7 +22,7 @@ ifeq ($(shell uname),Darwin)
 endif
 
 OUT ?= out
-SRC_FILES := $(wildcard src/*.cpp)
+SRC_FILES := $(wildcard src/*.cc)
 BIN_FILES := $(notdir $(basename $(SRC_FILES)))
 OUT_FILES := $(addprefix $(OUT)/,$(BIN_FILES))
 
@@ -36,7 +36,7 @@ clean:
 $(OUT):
 	mkdir -p $@
 
-$(OUT_FILES): $(OUT)/%: src/%.cpp | $(OUT)
+$(OUT_FILES): $(OUT)/%: src/%.cc | $(OUT)
 	$(CLANG) $(CXXFLAGS) $(INCLUDES) -o $@ $^
 
 $(addprefix run,$(BIN_FILES)): run% : txt/input/% $(OUT)/%
