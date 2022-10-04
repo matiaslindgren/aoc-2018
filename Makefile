@@ -41,3 +41,13 @@ $(OUT_FILES): $(OUT)/%: src/%.cc | $(OUT)
 
 $(addprefix run,$(BIN_FILES)): run% : txt/input/% $(OUT)/%
 	@cat $< | $(OUT)/$*
+
+test: $(OUT_FILES)
+	@for day in $(BIN_FILES); do \
+		echo $$day; \
+		result="$$(cat txt/input/$$day | $(OUT)/$$day)"; \
+		expect="$$(cat txt/correct/$$day)"; \
+		echo result: $$result; \
+		echo expect: $$expect; \
+		if [[ "$$result" != "$$expect" ]]; then exit 1; fi; \
+	done
