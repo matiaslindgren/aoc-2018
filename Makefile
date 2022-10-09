@@ -26,10 +26,10 @@ SRC_FILES := $(wildcard src/*.cc)
 BIN_FILES := $(notdir $(basename $(SRC_FILES)))
 OUT_FILES := $(addprefix $(OUT)/,$(BIN_FILES))
 
-.PHONY: all clean
-
+.PHONY: all
 all: $(OUT_FILES)
 
+.PHONY: clean
 clean:
 	rm -rv $(OUT)
 
@@ -39,15 +39,24 @@ $(OUT):
 $(OUT_FILES): $(OUT)/%: src/%.cc | $(OUT)
 	$(CLANG) $(CXXFLAGS) $(INCLUDES) -o $@ $^
 
-$(addprefix run,$(BIN_FILES)): run% : txt/input/% $(OUT)/%
+RUN_TARGETS := $(addprefix run,$(BIN_FILES))
+
+.PHONY: $(RUN_TARGETS)
+$(RUN_TARGETS): run% : txt/input/% $(OUT)/%
 	@cat $< | $(OUT)/$*
 
-test: $(OUT_FILES)
-	@for day in $(BIN_FILES); do \
-		echo $$day; \
-		result="$$(make run$$day)"; \
-		expect="$$(cat txt/correct/$$day)"; \
+TEST_TARGETS := $(addprefix test,$(BIN_FILES))
+
+.PHONY: test
+test: $(TEST_TARGETS)
+
+.PHONY: $(TEST_TARGETS)
+$(TEST_TARGETS): test% : $(OUT)/%
+	@echo $*; \
+	result=$$(make run$*); \
+	expect=$$(cat txt/correct/$*); \
+	if [[ "$$result" != "$$expect" ]]; then \
 		echo result: $$result; \
 		echo expect: $$expect; \
-		[[ "$$result" == "$$expect" ]] || exit 1; \
-	done
+		exit 1; \
+	fi
