@@ -4,7 +4,7 @@ CLANG := $(LLVM_BUILD)/bin/clang-15
 CXXFLAGS := \
 	-lc++ \
 	-std=c++2b \
-	-O3 \
+	-O1 \
 	-Wall \
 	-Wpedantic \
 	-Werror \

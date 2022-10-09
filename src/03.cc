@@ -2,6 +2,8 @@ import std;
 
 using std::vector, std::string, std::stoi, std::exchange;
 
+constexpr int grid_size{1000};
+
 struct Claim {
   int id;
   int left;
@@ -26,17 +28,16 @@ struct Claim {
 };
 
 int main() {
-  constexpr int max_size{1000};
   vector<Claim> claims;
   string line;
   while (std::getline(std::cin, line)) {
     claims.push_back(Claim::from_str(line));
   }
-  vector<int> claim_counts(max_size * max_size, 0);
+  vector<int> claim_counts(grid_size * grid_size, 0);
   for (const auto& claim : claims) {
     for (auto y{claim.top}; y < claim.top + claim.height; ++y) {
       for (auto x{claim.left}; x < claim.left + claim.width; ++x) {
-        ++claim_counts[x * max_size + y];
+        ++claim_counts[x * grid_size + y];
       }
     }
   }
@@ -45,7 +46,7 @@ int main() {
   auto intact_claim{std::find_if(claims.begin(), claims.end(), [&](const auto& claim) {
     for (auto y{claim.top}; y < claim.top + claim.height; ++y) {
       for (auto x{claim.left}; x < claim.left + claim.width; ++x) {
-        if (claim_counts[x * max_size + y] != 1) {
+        if (claim_counts[x * grid_size + y] != 1) {
           return false;
         }
       }
